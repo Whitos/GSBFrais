@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FicheFraisRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -49,6 +50,7 @@ class FicheFrais
     #[ORM\OneToMany(targetEntity: LigneFraisHorsForfait::class, mappedBy: 'ficheFrais')]
     private Collection $lignesFraisHorsForfait;
 
+
     public function __construct()
     {
         $this->lignesFraisForfait = new ArrayCollection();
@@ -60,12 +62,12 @@ class FicheFrais
         return $this->id;
     }
 
-    public function getMois(): ?string
+    public function getMois(): ?\DateTimeInterface
     {
         return $this->mois;
     }
 
-    public function setMois(string $mois): static
+    public function setMois(\DateTimeInterface $mois): static
     {
         $this->mois = $mois;
 
@@ -191,4 +193,5 @@ class FicheFrais
 
         return $this;
     }
+
 }
