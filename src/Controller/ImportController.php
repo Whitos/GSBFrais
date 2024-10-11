@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\FicheFrais;
+use App\Entity\FraisForfait;
 use App\Entity\LigneFraisForfait;
+use App\Entity\LigneFraisHorsForfait;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +24,7 @@ class ImportController extends AbstractController
         ]);
     }
 
-    #[Route('/import/user', name: 'app_import_user')]
+    #[Route('/import/user', name: 'app_import_user')]     ////import fait
     public function lireVisiteurJson(EntityManagerInterface $entityManager): JsonResponse
     {
         $chemin = $this->getParameter('kernel.project_dir') . '/public/visiteur.json';
@@ -32,11 +34,7 @@ class ImportController extends AbstractController
         }
 
         $contenuJson = file_get_contents($chemin);
-        $visiteurData = json_decode($contenuJson);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return new JsonResponse(['error' => 'Fichier JSON invalide' . json_last_error_msg()], 500);
-        }
+        $visiteurData = json_decode($contenuJson, false, 512, JSON_THROW_ON_ERROR);
 
         foreach ($visiteurData as $visiteur) {
             $user = new User();
@@ -59,21 +57,17 @@ class ImportController extends AbstractController
         return new JsonResponse(['success' => 'Visiteursimportés avec succès'], 200);
     }
 
-    #[Route('/import/fichefrais', name: 'app_import_fichefrais')]
+    #[Route('/import/fichefrais', name: 'app_import_fichefrais')]      ////import fait
     public function lireFicheFraisJson(EntityManagerInterface $entityManager): JsonResponse
     {
-        $chemin = $this->getParameter('kernel.project_dir') . '/public/fichefrais.json';
+        $chemin = $this->getParameter('kernel.project_dir') . '/public/visiteur.json';
 
         if (!file_exists($chemin)) {
             return new JsonResponse(['error' => 'Fichier non trouvé'], 404);
         }
 
         $contenuJson = file_get_contents($chemin);
-        $ficheFraisData = json_decode($contenuJson);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return new JsonResponse(['error' => 'Fichier JSON invalide' . json_last_error_msg()], 500);
-        }
+        $fichesFraisData = json_decode($contenuJson, false, 512, JSON_THROW_ON_ERROR);
 
 
         $etatMapping = [
@@ -82,24 +76,25 @@ class ImportController extends AbstractController
             'RB' => 3,
             'VA' => 4,
         ];
-        foreach ($ficheFraisData as $ficheFrais) {
-            $ficheFraisVisiteur = new FicheFrais();
+        foreach ($fichesFraisData as $ficheFraisData) {
+            $ficheFrais = new FicheFrais();
 
-            $mois = \DateTime::createFromFormat('Ym', substr($ficheFrais->mois, 0, 6));
+            $mois = \DateTime::createFromFormat('Ym', substr($ficheFraisData->mois, 0, 6));
             $mois->setDate($mois->format('Y'), $mois->format('m'), 1);
-            $ficheFraisVisiteur->setMois($mois);
-            $ficheFraisVisiteur->setNbJustificatifs($ficheFrais->nbJustificatifs);
-            $ficheFraisVisiteur->setMontantValid($ficheFrais->montantValide);
-            $ficheFraisVisiteur->setDateModif(new \DateTime($ficheFrais->dateModif));
+            $ficheFrais->setMois($mois);
 
-            $etatId = $etatMapping[$ficheFrais->idEtat] ?? null;
+            $ficheFrais->setNbJustificatifs($ficheFraisData->nbJustificatifs);
+            $ficheFrais->setMontantValid($ficheFraisData->montantValide);
+            $ficheFrais->setDateModif(new \DateTime($ficheFraisData->dateModif));
+
+            $etatId = $etatMapping[$ficheFraisData->idEtat] ?? null;
             $etat = $entityManager->getRepository(Etat::class)->find($etatId);
-            $ficheFraisVisiteur->setEtat($etat);
+            $ficheFrais->setEtat($etat);
 
-            $user = $entityManager->getRepository(User::class)->findOneBy(['oldId' => $ficheFrais->idVisiteur]);
-            $ficheFraisVisiteur->setUser($user);
+            $user = $entityManager->getRepository(User::class)->findOneBy(['oldId' => $ficheFraisData->idVisiteur]);
+            $ficheFrais->setUser($user);
 
-            $entityManager->persist($ficheFraisVisiteur);
+            $entityManager->persist($ficheFrais);
             $entityManager->flush();
         }
 
@@ -122,21 +117,78 @@ class ImportController extends AbstractController
             return new JsonResponse(['error' => 'Fichier JSON invalide' . json_last_error_msg()], 500);
         }
 
+        $fraisForfaitMapping = [
+            'ETP' => 1,
+            'KM' => 2,
+            'NUI' => 3,
+            'REP' => 4,
+        ];
         foreach ($ligneFraisForfaitData as $ligneFraisForfait) {
             $ligneFraisForfaitVisiteur = new LigneFraisForfait();
 
             $ligneFraisForfaitVisiteur->setQuantite($ligneFraisForfait->quantite);
 
-            $ficheFrais = $entityManager->getRepository(FicheFrais::class)->findOneBy(['mois' => $ligneFraisForfait->mois]);
-            $ligneFraisForfaitVisiteur->setFicheFrais($ficheFrais);
+            $mois = \DateTime::createFromFormat('Ym', $ligneFraisForfait->mois);
+            if ($mois === false) {
+                continue;
+            }
+            $mois->setDate($mois->format('Y'), $mois->format('m'), 1);
+            $user = $entityManager->getRepository(User::class)->findOneBy(['oldId' => $ligneFraisForfait->idVisiteur]);
+            $ficheFrais = $entityManager->getRepository(FicheFrais::class)->findOneBy(['mois' => $mois, 'user' => $user]);
+            $ligneFraisForfaitVisiteur->setFichesFrais($ficheFrais);
 
-            $fraisForfait = $entityManager->getRepository(FraisForfait::class)->findOneBy(['id' => $ligneFraisForfait->idFraisForfait]);
-            $ligneFraisForfaitVisiteur->setFraisForfait($fraisForfait);
+            $fraisForfaitId = $fraisForfaitMapping[$ligneFraisForfait->idFraisForfait] ?? null;
+            $fraisForfait = $entityManager->getRepository(FraisForfait::class)->find($fraisForfaitId);
+            $ligneFraisForfaitVisiteur->setFraisForfaits($fraisForfait);
 
             $entityManager->persist($ligneFraisForfaitVisiteur);
             $entityManager->flush();
         }
 
         return new JsonResponse(['success' => 'Lignes de frais forfait importées avec succès'], 200);
+    }
+
+    #[Route('/import/ligneHorsFraisForfait', name: 'app_import_lignefraishorsforfait')]
+    public function lireLigneFraisHorsForfaitJson(EntityManagerInterface $entityManager): JsonResponse
+    {
+
+        $chemin = $this->getParameter('kernel.project_dir') . '/public/lignefraishorsforfait.json';
+
+        if (!file_exists($chemin)) {
+            return new JsonResponse(['error' => 'Fichier non trouvé'], 404);
+        }
+
+        $contenuJson = file_get_contents($chemin);
+        $ligneFraisHorsForfaitData = json_decode($contenuJson);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return new JsonResponse(['error' => 'Fichier JSON invalide' . json_last_error_msg()], 500);
+        }
+
+        foreach ($ligneFraisHorsForfaitData as $ligneFraisHorsForfait) {
+
+            $ligneFraisHorsForfaitVisiteur = new LigneFraisHorsForfait();
+
+            $ligneFraisHorsForfaitVisiteur->setLibelle($ligneFraisHorsForfait->libelle);
+            $ligneFraisHorsForfaitVisiteur->setDate(new \DateTime($ligneFraisHorsForfait->date));
+            $ligneFraisHorsForfaitVisiteur->setMontant($ligneFraisHorsForfait->montant);
+
+            $mois = \DateTime::createFromFormat('Ym', $ligneFraisHorsForfait->mois);
+            if ($mois === false) {
+                continue;
+            }
+            $mois->setDate($mois->format('Y'), $mois->format('m'), 1);
+            $user = $entityManager->getRepository(User::class)->findOneBy(['oldId' => $ligneFraisHorsForfait->idVisiteur]);
+            $ligneFraisHorsForfaitVisiteur->setFicheFrais($entityManager->getRepository(FicheFrais::class)->findOneBy([
+                'mois' => $mois,
+                'user' => $user
+            ]));
+
+            $entityManager->persist($ligneFraisHorsForfaitVisiteur);
+            $entityManager->flush();
+        }
+
+        return new JsonResponse(['success' => 'Lignes de frais hors forfait importées avec succès'], 200);
+
     }
 }
