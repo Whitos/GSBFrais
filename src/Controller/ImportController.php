@@ -87,6 +87,7 @@ class ImportController extends AbstractController
             $ficheFrais->setMontantValid($ficheFraisData->montantValide);
             $ficheFrais->setDateModif(new \DateTime($ficheFraisData->dateModif));
 
+
             $etatId = $etatMapping[$ficheFraisData->idEtat] ?? null;
             $etat = $entityManager->getRepository(Etat::class)->find($etatId);
             $ficheFrais->setEtat($etat);
