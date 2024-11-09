@@ -3,68 +3,75 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6 text-center">User Details</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Roles</th>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>Login</th>
-                <td>{{ user.login }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ user.nom }}</td>
-            </tr>
-            <tr>
-                <th>Prenom</th>
-                <td>{{ user.prenom }}</td>
-            </tr>
-            <tr>
-                <th>Adresse</th>
-                <td>{{ user.adresse }}</td>
-            </tr>
-            <tr>
-                <th>Cp</th>
-                <td>{{ user.cp }}</td>
-            </tr>
-            <tr>
-                <th>Ville</th>
-                <td>{{ user.ville }}</td>
-            </tr>
-            <tr>
-                <th>DateEmbauche</th>
-                <td>{{ user.dateEmbauche ? user.dateEmbauche|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>OldId</th>
-                <td>{{ user.oldId }}</td>
-            </tr>
-            <tr>
-                <th>IsVerified</th>
-                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="overflow-x-auto bg-white p-6 rounded-lg shadow-md">
+            <table class="min-w-full">
+                <tbody>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">ID</th>
+                    <td class="py-2 px-4 border-b">{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Email</th>
+                    <td class="py-2 px-4 border-b">{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Roles</th>
+                    <td class="py-2 px-4 border-b">{{ user.roles ? user.roles|json_encode : '' }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Password</th>
+                    <td class="py-2 px-4 border-b">{{ user.password }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Login</th>
+                    <td class="py-2 px-4 border-b">{{ user.login }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Nom</th>
+                    <td class="py-2 px-4 border-b">{{ user.nom }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Prenom</th>
+                    <td class="py-2 px-4 border-b">{{ user.prenom }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Adresse</th>
+                    <td class="py-2 px-4 border-b">{{ user.adresse }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Cp</th>
+                    <td class="py-2 px-4 border-b">{{ user.cp }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Ville</th>
+                    <td class="py-2 px-4 border-b">{{ user.ville }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Date Embauche</th>
+                    <td class="py-2 px-4 border-b">{{ user.dateEmbauche ? user.dateEmbauche|date('Y-m-d') : '' }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Old ID</th>
+                    <td class="py-2 px-4 border-b">{{ user.oldId }}</td>
+                </tr>
+                <tr>
+                    <th class="py-2 px-4 border-b text-left font-medium text-gray-600">Is Verified</th>
+                    <td class="py-2 px-4 border-b">{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+        <div class="mt-6 text-center space-x-4">
+            <a href="{{ path('app_user_index') }}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">Back to List</a>
+            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600">Edit</a>
+        </div>
 
-    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-
-    {{ include('user/_delete_form.html.twig') }}
+        <div class="mt-6 text-center">
+            {{ include('user/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

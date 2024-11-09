@@ -60,7 +60,7 @@ class ImportController extends AbstractController
     #[Route('/import/fichefrais', name: 'app_import_fichefrais')]      ////import fait
     public function lireFicheFraisJson(EntityManagerInterface $entityManager): JsonResponse
     {
-        $chemin = $this->getParameter('kernel.project_dir') . '/public/visiteur.json';
+        $chemin = $this->getParameter('kernel.project_dir') . '/public/fichefrais.json';
 
         if (!file_exists($chemin)) {
             return new JsonResponse(['error' => 'Fichier non trouvé'], 404);
@@ -80,8 +80,10 @@ class ImportController extends AbstractController
             $ficheFrais = new FicheFrais();
 
             $mois = \DateTime::createFromFormat('Ym', substr($ficheFraisData->mois, 0, 6));
-            $mois->setDate($mois->format('Y'), $mois->format('m'), 1);
-            $ficheFrais->setMois($mois);
+            if ($mois) {
+                $mois->setDate($mois->format('Y'), $mois->format('m'), 1);
+                $ficheFrais->setMois($mois);
+            }
 
             $ficheFrais->setNbJustificatifs($ficheFraisData->nbJustificatifs);
             $ficheFrais->setMontantValid($ficheFraisData->montantValide);

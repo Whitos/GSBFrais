@@ -3,39 +3,43 @@
 {% block title %}FicheFrais index{% endblock %}
 
 {% block body %}
-    <h1>FicheFrais index</h1>
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6 text-center">FicheFrais Index</h1>
 
-    <table class="table">
-        <thead>
+        <table class="w-full text-left border border-gray-200 shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-50">
             <tr>
-                <th>Id</th>
-                <th>NbJustificatifs</th>
-                <th>MontantValid</th>
-                <th>DateModif</th>
-                <th>Mois</th>
-                <th>actions</th>
+                <th class="px-6 py-3 text-gray-600 uppercase font-semibold text-sm">Id</th>
+                <th class="px-6 py-3 text-gray-600 uppercase font-semibold text-sm">Nb Justificatifs</th>
+                <th class="px-6 py-3 text-gray-600 uppercase font-semibold text-sm">Montant Valid</th>
+                <th class="px-6 py-3 text-gray-600 uppercase font-semibold text-sm">Date Modif</th>
+                <th class="px-6 py-3 text-gray-600 uppercase font-semibold text-sm">Mois</th>
+                <th class="px-6 py-3 text-gray-600 uppercase font-semibold text-sm">Actions</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for fiche_frai in fiche_frais %}
-            <tr>
-                <td>{{ fiche_frai.id }}</td>
-                <td>{{ fiche_frai.nbJustificatifs }}</td>
-                <td>{{ fiche_frai.montantValid }}</td>
-                <td>{{ fiche_frai.dateModif ? fiche_frai.dateModif|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ fiche_frai.mois ? fiche_frai.mois|date('Y-m-d') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_fiche_frais_show', {'id': fiche_frai.id}) }}">show</a>
-                    <a href="{{ path('app_fiche_frais_edit', {'id': fiche_frai.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100">
+            {% for fiche_frai in fiche_frais %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">{{ fiche_frai.id }}</td>
+                    <td class="px-6 py-4">{{ fiche_frai.nbJustificatifs }}</td>
+                    <td class="px-6 py-4">{{ fiche_frai.montantValid }}</td>
+                    <td class="px-6 py-4">{{ fiche_frai.dateModif ? fiche_frai.dateModif|date('Y-m-d H:i:s') : '' }}</td>
+                    <td class="px-6 py-4">{{ fiche_frai.mois ? fiche_frai.mois|date('Y-m-d') : '' }}</td>
+                    <td class="px-6 py-4">
+                        <a href="{{ path('app_fiche_frais_show', {'id': fiche_frai.id}) }}" class="text-blue-500 hover:underline">show</a>
+                        <a href="{{ path('app_fiche_frais_edit', {'id': fiche_frai.id}) }}" class="text-yellow-500 hover:underline ml-4">edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_fiche_frais_new') }}">Create new</a>
+        <div class="mt-6 text-center">
+            <a href="{{ path('app_fiche_frais_new') }}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">Create New</a>
+        </div>
+    </div>
 {% endblock %}

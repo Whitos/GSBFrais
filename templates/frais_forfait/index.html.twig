@@ -1,37 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}FraisForfait index{% endblock %}
+{% block title %}FraisForfait Index{% endblock %}
 
 {% block body %}
-    <h1>FraisForfait index</h1>
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6 text-center">FraisForfait Index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Libelle</th>
-                <th>Montant</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for frais_forfait in frais_forfaits %}
-            <tr>
-                <td>{{ frais_forfait.id }}</td>
-                <td>{{ frais_forfait.libelle }}</td>
-                <td>{{ frais_forfait.montant }}</td>
-                <td>
-                    <a href="{{ path('app_frais_forfait_show', {'id': frais_forfait.id}) }}">show</a>
-                    <a href="{{ path('app_frais_forfait_edit', {'id': frais_forfait.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                <thead class="bg-gray-200">
+                <tr>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left font-medium text-gray-600">ID</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left font-medium text-gray-600">Libelle</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left font-medium text-gray-600">Montant</th>
+                    <th class="py-2 px-4 border-b border-gray-300 text-left font-medium text-gray-600">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for frais_forfait in frais_forfaits %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-2 px-4 border-b border-gray-300">{{ frais_forfait.id }}</td>
+                        <td class="py-2 px-4 border-b border-gray-300">{{ frais_forfait.libelle }}</td>
+                        <td class="py-2 px-4 border-b border-gray-300">{{ frais_forfait.montant }}</td>
+                        <td class="py-2 px-4 border-b border-gray-300">
+                            <a href="{{ path('app_frais_forfait_show', {'id': frais_forfait.id}) }}" class="text-blue-500 hover:underline mr-2">Show</a>
+                            <a href="{{ path('app_frais_forfait_edit', {'id': frais_forfait.id}) }}" class="text-green-500 hover:underline">Edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="py-2 px-4 border-b border-gray-300 text-center text-gray-500">No records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{{ path('app_frais_forfait_new') }}">Create new</a>
+        <div class="mt-6 text-center">
+            <a href="{{ path('app_frais_forfait_new') }}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">Create New</a>
+        </div>
+    </div>
 {% endblock %}
