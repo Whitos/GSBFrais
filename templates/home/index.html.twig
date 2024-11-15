@@ -1,21 +1,63 @@
+{# templates/home/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Bienvenue sur GSB Frais{% endblock %}
 
 {% block body %}
-    <div class="flex items-center justify-center min-h-[calc(100vh-theme(spacing.32))]">
-        <div class="bg-white p-10 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 max-w-lg w-full mx-4 text-center">
-            <h1 class="text-4xl font-semibold text-gray-800 mb-4">Bienvenue sur GSB Frais!</h1>
-            <p class="text-gray-600 mb-8">Connectez-vous pour gérer vos frais de manière simple et efficace.</p>
-
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ path('app_login') }}" class="bg-blue-600 text-white py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl transition transform hover:-translate-y-1">
-                    Connexion
-                </a>
-                <a href="{{ path('app_register') }}" class="bg-green-500 text-white py-2 px-6 rounded-full shadow-lg hover:bg-green-600 hover:shadow-xl transition transform hover:-translate-y-1">
-                    Inscription
-                </a>
-            </div>
+    {{ form_start(form, {'attr': {'class': 'mb-4'}}) }}
+    <div class="row align-items-end">
+        <div class="col">
+            {{ form_row(form.mois) }}
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
         </div>
     </div>
+    {{ form_end(form) }}
+
+    {% if fiche is defined and fiche %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2 class="card-title">Fiche de frais du mois de {{ fiche.mois|date('m/Y') }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>État :</strong> {{ fiche.etat }}
+                    <br>
+                    <strong>Montant validé :</strong> {{ fiche.montantValide|default('Non validé') }} €
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Type de frais</th>
+                        <th>Quantité</th>
+                        <th>Montant unitaire</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ligne in fiche.lignes %}
+                        <tr>
+                            <td>{{ ligne.type.libelle }}</td>
+                            <td>{{ ligne.quantite }}</td>
+                            <td>{{ ligne.type.montant }} €</td>
+                            <td>{{ ligne.total }} €</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end"><strong>Total de la fiche :</strong></td>
+                        <td><strong>{{ fiche.montantTotal }} €</strong></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    {% elseif fiche is defined %}
+        <div class="alert alert-info mt-4">
+            Aucune fiche de frais trouvée pour ce mois.
+        </div>
+    {% endif %}
 {% endblock %}
