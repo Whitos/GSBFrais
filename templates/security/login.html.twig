@@ -1,54 +1,63 @@
-{# templates/security/login.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-<div class="flex items-center justify-center min-h-screen bg-gray-100">
-<div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 space-y-6">
-{% if error %}
-<div class="bg-red-100 text-red-700 p-4 rounded-md">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-{% endif %}
+    <div class="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="w-full max-w-md space-y-8">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Connexion</h2>
+            </div>
 
-{% if app.user %}
-<div class="text-gray-700 mb-3">
-You are logged in as <span class="font-semibold">{{ app.user.userIdentifier }}</span>,
-<a href="{{ path('app_logout') }}" class="text-blue-600 hover:underline">Logout</a>
-</div>
-{% endif %}
+            <form class="mt-8 space-y-6" action="{{ path('app_login') }}" method="post">
+                {# Important: Ajout du token CSRF #}
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-<h1 class="text-2xl font-bold text-gray-800 text-center">Please sign in</h1>
+                {% if error %}
+                    <div class="rounded-md bg-red-50 p-4 mb-4">
+                        <div class="text-sm text-red-700">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    </div>
+                {% endif %}
 
-<form method="post" class="space-y-4">
-<div>
-<label for="username" class="block text-gray-700 font-semibold mb-1">Email</label>
-<input type="email" name="_username" id="username" value="{{ last_username }}"
-class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-autocomplete="email" required autofocus>
-</div>
+                <div class="space-y-4 rounded-md shadow-sm">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700">Login</label>
+                        <input id="username" name="_username" type="text" required
+                               class="relative block w-full rounded-md border border-gray-300 px-3 py-2 mt-1
+                                  focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500">
+                    </div>
 
-<div>
-<label for="password" class="block text-gray-700 font-semibold mb-1">Password</label>
-<input type="password" name="_password" id="password"
-class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-autocomplete="current-password" required>
-</div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                        <input id="password" name="_password" type="password" required
+                               class="relative block w-full rounded-md border border-gray-300 px-3 py-2 mt-1
+                                  focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500">
+                    </div>
+                </div>
 
-<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="flex items-center">
+                    <input id="remember_me" name="_remember_me" type="checkbox"
+                           class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <label for="remember_me" class="ml-2 block text-sm text-gray-900">Se souvenir de moi</label>
+                </div>
 
-<div class="flex items-center">
-<input type="checkbox" name="_remember_me" id="_remember_me" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-<label for="_remember_me" class="ml-2 block text-gray-700">Remember me</label>
-</div>
+                <div>
+                    <button type="submit"
+                            class="group relative flex w-full justify-center rounded-md bg-blue-600 px-3 py-2
+                               text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline
+                               focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+                        Se connecter
+                    </button>
+                </div>
 
-<div class="text-right">
-<a href="/reset-password" class="text-blue-600 hover:underline">Forgot password?</a>
-</div>
-
-<button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-Sign in
-</button>
-</form>
-</div>
-</div>
+                <div class="text-center">
+                    <a href="{{ path('app_login') }}" class="text-sm text-blue-600 hover:text-blue-500">
+                        Mot de passe oublié ?
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

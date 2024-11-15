@@ -1,13 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit FraisForfait{% endblock %}
+{% block title %}Modifier FraisForfait{% endblock %}
 
 {% block body %}
-    <h1>Edit FraisForfait</h1>
+    <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Modifier FraisForfait</h1>
 
-    {{ include('frais_forfait/_form.html.twig', {'button_label': 'Update'}) }}
+            {{ include('frais_forfait/_form.html.twig', {
+                'button_label': 'Mettre à jour',
+                'attr': {'class': 'space-y-4'}
+            }) }}
 
-    <a href="{{ path('app_frais_forfait_index') }}">back to list</a>
+            <div class="flex justify-between mt-4">
+                <a href="{{ path('app_frais_forfait_index') }}"
+                   class="text-blue-600 hover:text-blue-700 hover:underline">
+                    ← Retour à la liste
+                </a>
 
-    {{ include('frais_forfait/_delete_form.html.twig') }}
+                <a href="{{ path('app_frais_forfait_delete', {'id': frais_forfait.id}) }}"
+                   class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow">
+                    Supprimer
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

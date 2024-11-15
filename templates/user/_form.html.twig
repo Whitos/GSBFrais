@@ -1,13 +1,73 @@
-{{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
-<div class="grid gap-4">
-    {{ form_widget(form, {
-        'attr': {'class': 'w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'}
-    }) }}
+{# _form.html.twig #}
+{{ form_start(form, {'attr': {'class': 'max-w-lg mx-auto p-6 space-y-6 bg-white rounded-lg shadow-md'}}) }}
+
+    {# Email field #}
+<div class="space-y-2">
+    {{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.email, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.email, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
 </div>
 
-<div class="mt-6 text-center">
-    <button class="w-full bg-blue-500 text-white py-2 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        {{ button_label|default('Save') }}
+{# Password field #}
+<div class="space-y-2">
+    {{ form_label(form.password, 'Password', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.password, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.password, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+{# Login field #}
+<div class="space-y-2">
+    {{ form_label(form.login, 'Login', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.login, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.login, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+{# Nom field #}
+<div class="space-y-2">
+    {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.nom, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.nom, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+{# Prenom field #}
+<div class="space-y-2">
+    {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.prenom, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.prenom, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+{# Adresse field #}
+<div class="space-y-2">
+    {{ form_label(form.adresse, 'Adresse', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.adresse, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.adresse, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+{# CP field #}
+<div class="space-y-2">
+    {{ form_label(form.cp, 'Code Postal', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.cp, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.cp, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+{# Ville field #}
+<div class="space-y-2">
+    {{ form_label(form.ville, 'Ville', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.ville, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.ville, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+{# Date Embauche field #}
+<div class="space-y-2">
+    {{ form_label(form.dateEmbauche, 'Date d\'embauche', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+    {{ form_widget(form.dateEmbauche, {'attr': {'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'}}) }}
+    {{ form_errors(form.dateEmbauche, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+</div>
+
+<div class="pt-5">
+    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+        {{ button_label|default('Enregistrer') }}
     </button>
 </div>
+
 {{ form_end(form) }}

@@ -31,9 +31,7 @@
                     <tr class="hover:bg-gray-100">
                         <td class="py-2 px-4 border-b border-gray-300">{{ user.id }}</td>
                         <td class="py-2 px-4 border-b border-gray-300">{{ user.email }}</td>
-                        <td class="py-2 px-4 border-b border-gray-300 hidden md:table-cell">
-                        {{ dump(user.roles) }}
-                        {{ user.roles ? user.roles|join(', ') : '' }}
+                        <td class="py-2 px-4 border-b border-gray-300 hidden md:table-cell">{{ user.roles ? user.roles|join(', ') : '' }}</td>
                         <td class="py-2 px-4 border-b border-gray-300 hidden sm:table-cell">{{ user.password }}</td>
                         <td class="py-2 px-4 border-b border-gray-300">{{ user.login }}</td>
                         <td class="py-2 px-4 border-b border-gray-300 hidden md:table-cell">{{ user.nom }}</td>

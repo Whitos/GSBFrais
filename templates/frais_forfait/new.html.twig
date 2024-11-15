@@ -1,11 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New FraisForfait{% endblock %}
+{% block title %}Créer un nouveau Frais Forfait{% endblock %}
 
 {% block body %}
-    <h1>Create new FraisForfait</h1>
+    <div class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
+        <div class="w-full max-w-lg bg-white p-10 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-semibold text-gray-800 text-center mb-8">Créer un nouveau Frais Forfait</h1>
 
-    {{ include('frais_forfait/_form.html.twig') }}
+            <div class="space-y-6">
+                {{ include('frais_forfait/_form.html.twig', {
+                    'attr': {'class': 'space-y-4'}
+                }) }}
+            </div>
 
-    <a href="{{ path('app_frais_forfait_index') }}">back to list</a>
+            <div class="mt-8 text-center">
+                <a href="{{ path('app_frais_forfait_index') }}"
+                   class="inline-block text-indigo-600 hover:text-indigo-800 font-medium text-sm">
+                    ← Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

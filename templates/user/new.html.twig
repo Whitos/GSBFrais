@@ -1,17 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create New User{% endblock %}
+{% block title %}Nouveau Utilisateur{% endblock %}
 
 {% block body %}
-    <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-6 text-center">Create New User</h1>
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-lg mx-auto">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Créer un nouvel utilisateur</h1>
 
-        <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
             {{ include('user/_form.html.twig') }}
-        </div>
 
-        <div class="mt-6 text-center">
-            <a href="{{ path('app_user_index') }}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">Back to List</a>
+            <div class="mt-6 text-center">
+                <a href="{{ path('app_user_index') }}" class="text-blue-500 hover:text-blue-600 font-medium">
+                    Retour à la liste
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}

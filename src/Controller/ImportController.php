@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ImportController extends AbstractController
@@ -24,8 +25,9 @@ class ImportController extends AbstractController
         ]);
     }
 
-    #[Route('/import/user', name: 'app_import_user')]     ////import fait
-    public function lireVisiteurJson(EntityManagerInterface $entityManager): JsonResponse
+
+    #[Route('/import/user', name: 'app_import_user')]
+    public function lireVisiteurJson(EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $chemin = $this->getParameter('kernel.project_dir') . '/public/visiteur.json';
 
@@ -43,7 +45,11 @@ class ImportController extends AbstractController
             $user->setNom($visiteur->nom);
             $user->setPrenom($visiteur->prenom);
             $user->setLogin($visiteur->login);
-            $user->setPassword($visiteur->mdp);
+
+            // Hachage du mot de passe
+            $hashedPassword = $passwordHasher->hashPassword($user, $visiteur->mdp);
+            $user->setPassword($hashedPassword);
+
             $user->setAdresse($visiteur->adresse);
             $user->setCp($visiteur->cp);
             $user->setVille($visiteur->ville);
@@ -51,11 +57,13 @@ class ImportController extends AbstractController
             $user->setEmail($visiteur->prenom . '.' . $visiteur->nom . '@example.com');
 
             $entityManager->persist($user);
-            $entityManager->flush();
         }
 
-        return new JsonResponse(['success' => 'Visiteursimportés avec succès'], 200);
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => 'Visiteurs importés avec succès'], 200);
     }
+
 
     #[Route('/import/fichefrais', name: 'app_import_fichefrais')]      ////import fait
     public function lireFicheFraisJson(EntityManagerInterface $entityManager): JsonResponse
