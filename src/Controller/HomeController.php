@@ -7,34 +7,36 @@ use App\Form\FicheFraisType;
 use App\Form\MoisFicheSelectorType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(\Symfony\Component\HttpFoundation\Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $ficheFrais = new FicheFrais();
-        $form = $this->createForm(MoisFicheSelectorType::class, $ficheFrais);
+        $ficheFraisCollection = $entityManager->getRepository(FicheFrais::class)->findBy([
+            'user' => $this->getUser(),
+        ]);
+        $form = $this->createForm(MoisFicheSelectorType::class, null, [
+            'ficheFraisCollection' => $ficheFraisCollection,
+        ]);
         $form->handleRequest($request);
+        $ficheFrais = null;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $mois = $form->get('mois')->getData();
-            $moisDateTime = \DateTime::createFromFormat('m', $mois);
-            $ficheFrais = $entityManager->getRepository(FicheFrais::class)->findOneBy(['mois' => $moisDateTime]);
-            if ($ficheFrais) {
-                $form = $this->createForm(MoisFicheSelectorType::class, $ficheFrais);
-            } else {
-                $ficheFrais = new FicheFrais();
-                $ficheFrais->setMois($moisDateTime);
-                $form = $this->createForm(FicheFraisType::class, $ficheFrais);
-            }
+            $ficheFrais = $form->getData();
+
+            return $this->redirectToRoute('app_home', [$ficheFrais], Response::HTTP_SEE_OTHER);
+
         }
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
-            'form' => $form->createView(),
+            'form' => $form,
+            'ficheFrais' => $ficheFrais,
+
         ]);
     }
 }
