@@ -18,7 +18,9 @@ final class FicheFraisController extends AbstractController
     public function index(FicheFraisRepository $ficheFraisRepository): Response
     {
         return $this->render('fiche_frais/index.html.twig', [
-            'fiche_frais' => $ficheFraisRepository->findAll(),
+            'fiche_frais' => $ficheFraisRepository->findBy([
+                'user' => $this->getUser(),
+            ]),
         ]);
     }
 

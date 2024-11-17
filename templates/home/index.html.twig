@@ -1,47 +1,59 @@
-{# templates/home/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Bienvenue sur GSB Frais{% endblock %}
 
 {% block body %}
-    {{ form_start(form, {'attr': {'class': 'mb-4'}}) }}
-    <div class="row align-items-end">
-        <div class="col">
-            {{ form_row(form.mois) }}
+
+    {{ form_start(form, {'attr': {'class': 'mb-4', 'data-turbo': 'false'}}) }}
+    <div class="flex items-end">
+        <div class="flex-1">
+            {{ form_row(form.mois, {'attr': {'class': 'w-full'}}) }}
         </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Rechercher</button>
+        <div class="ml-4">
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Rechercher</button>
         </div>
     </div>
     {{ form_end(form) }}
 
-    {% if ficheFrais is not null %}
-        {% set ficheFrais = ficheFraisCollection[0] %}
-        <h2 class="mt-4">Fiche de frais du mois de {{ ficheFrais.mois|date('m/Y') }}</h2>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Etat</th>
-                <th>Date de modification</th>
-                <th>Montant validé</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for ficheFrais in ficheFraisCollection %}
-                <tr>
-                    <td>{{ ficheFrais.etat.libelle }}</td>
-                    <td>{{ ficheFrais.dateModif|date('d/m/Y') }}</td>
-                    <td>{{ ficheFrais.montantValide|number_format(2, ',', ' ') }} €</td>
-                    <td>
-                        <a href="{{ path('fiche_frais_show', {'id': ficheFrais.id}) }}" class="btn btn-primary">Voir</a>
-                        <a href="{{ path('fiche_frais_edit', {'id': ficheFrais.id}) }}" class="btn btn-secondary">Modifier</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+
+    {% if selectedFicheFrais is not null %}
+        <div class="mt-8 p-6 border border-gray-300 rounded-lg shadow-md bg-white">
+            <h2 class="text-xl font-semibold mb-4">Fiche de frais du mois de {{ selectedFicheFrais.mois|date('m/Y') }}</h2>
+            <h3 class="text-lg font-semibold mb-4">Informations</h3>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-gray-700">État :</span>
+                    <span class="text-gray-800">{{ selectedFicheFrais.etat.libelle }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-gray-700">Montant validé :</span>
+                    <span class="text-gray-800">{{ selectedFicheFrais.montantValid|number_format(2, ',', ' ') }} €</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-gray-700">Date de modification :</span>
+                    <span class="text-gray-800">{{ selectedFicheFrais.dateModif|date('d/m/Y') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 p-6 border border-gray-300 rounded-lg shadow-md bg-white">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">Frais Forfait:</h3>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <table class="min-w-full table-auto">
+                {% for lignesFraisForfait in selectedFicheFrais %}
+                    {% if lignefraisForfait is not null %}
+                        <tr class="border-b border-gray-200">
+                            <td class="px-6 py-4">{{ ligne.quantite }}</td>
+                            <td class="px-6 py-4">{{ ligne.fraisForfait.libelle }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     {% else %}
-        <p>Aucune fiche de frais trouvée pour le mois sélectionné.</p>
+        <p class="mt-4 text-gray-600">Veuillez sélectionner un mois pour voir la fiche correspondante.</p>
     {% endif %}
+
 {% endblock %}

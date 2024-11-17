@@ -11,26 +11,25 @@ class MoisFicheSelectorType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $choices = [];
+        foreach ($options['ficheFraisCollection'] as $ficheFrais) {
+            $moisLabel = $ficheFrais->getMois()->format('M Y');
+            $choices[$moisLabel] = $ficheFrais->getId();
+        }
 
         $builder
             ->add('mois', ChoiceType::class, [
-                'choices' => [
-                    $options['ficheFraisCollection']
-                ],
-
-                'choice_label' => function ($choice, $key): string {
-                    return $choice->getMois()->format('M Y');
-                },
+                'choices' => $choices,
                 'required' => true,
-
-            ])
-        ;
+                'label' => 'Sélectionnez un mois',
+                'placeholder' => 'Choisir un mois',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'ficheFraisCollection' => [],
+            'ficheFraisCollection' => [], // Expect an array of FicheFrais objects
         ]);
     }
 }

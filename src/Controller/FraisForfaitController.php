@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/frais/forfait')]
+#[Route('/fraisforfait')]
 final class FraisForfaitController extends AbstractController
 {
     #[Route(name: 'app_frais_forfait_index', methods: ['GET'])]
