@@ -13,7 +13,7 @@ class MoisFicheSelectorType extends AbstractType
     {
         $choices = [];
         foreach ($options['ficheFraisCollection'] as $ficheFrais) {
-            $moisLabel = $ficheFrais->getMois()->format('M Y');
+            $moisLabel = $ficheFrais->getMois()->format('m Y');
             $choices[$moisLabel] = $ficheFrais->getId();
         }
 

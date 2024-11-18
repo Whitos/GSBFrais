@@ -41,7 +41,7 @@ class FicheFrais
     /**
      * @var Collection<int, LigneFraisForfait>
      */
-    #[ORM\OneToMany(targetEntity: LigneFraisForfait::class, mappedBy: 'ficheFrais')]
+    #[ORM\OneToMany(targetEntity: LigneFraisForfait::class, mappedBy: 'fichesFrais', fetch: 'EAGER')]
     private Collection $lignesFraisForfait;
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\FicheFrais;
+use App\Entity\FraisForfait;
 use App\Form\MoisFicheSelectorType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,6 +27,7 @@ class HomeController extends AbstractController
         $selectedFicheFrais = null;
         $ligneFraisForfait = null;
         $ligneFraisHorsForfait = null;
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ficheFrais = $form->get('mois')->getData();
