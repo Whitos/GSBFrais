@@ -44,7 +44,7 @@
                 <tbody>
                     {% for lignesFraisForfait in selectedFicheFrais.lignesFraisForfait %}
                         <tr>
-                            <td>:{{ lignesFraisForfait.quantite }}</td>
+                            <td>{{ lignesFraisForfait.fraisForfaits.libelle }}: {{ lignesFraisForfait.quantite }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
