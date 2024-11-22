@@ -1,58 +1,87 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Bienvenue sur GSB Frais{% endblock %}
-
 {% block body %}
+    <div class="container mx-auto px-6 py-10">
 
-    {{ form_start(form, {'attr': {'class': 'mb-4', 'data-turbo': 'false'}}) }}
-    <div class="flex items-end">
-        <div class="flex-1">
-            {{ form_row(form.mois, {'attr': {'class': 'w-full'}}) }}
+        <div class="bg-blue-600 p-6 rounded-lg shadow-lg text-white">
+            <h1 class="text-2xl font-semibold mb-4 text-center">Rechercher une fiche de frais</h1>
+            <turbo-frame id="the_frame_form">
+            {{ form_start(form, {'attr': {'class': 'flex items-center', 'data-turbo-frame': 'the_frame_fiche'}}) }}
+            <div class="flex-grow mr-4">
+                {{ form_row(form.mois, {'attr': {'class': 'w-full bg-blue-50 text-gray-700 border-blue-400 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+            </div>
+            <button type="submit"
+                    class="px-6 py-2 bg-blue-700 text-white font-medium rounded-md shadow-md hover:bg-blue-800 transition-colors duration-300 ease-in-out">
+                Rechercher
+            </button>
+            {{ form_end(form) }}
+            </turbo-frame>
         </div>
-        <div class="ml-4">
-            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Rechercher</button>
-        </div>
-    </div>
-    {{ form_end(form) }}
 
-
-    {% if selectedFicheFrais is not null %}
-        <div class="mt-8 p-6 border border-gray-300 rounded-lg shadow-md bg-white">
-            <h2 class="text-xl font-semibold mb-4">Fiche de frais du mois de {{ selectedFicheFrais.mois|date('m/Y') }}</h2>
-            <h3 class="text-lg font-semibold mb-4">Informations</h3>
-            <div class="grid grid-cols-1 gap-4">
-                <div class="flex justify-between items-center">
-                    <span class="font-medium text-gray-700">État :</span>
-                    <span class="text-gray-800">{{ selectedFicheFrais.etat.libelle }}</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="font-medium text-gray-700">Montant validé :</span>
-                    <span class="text-gray-800">{{ selectedFicheFrais.montantValid|number_format(2, ',', ' ') }} €</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="font-medium text-gray-700">Date de modification :</span>
-                    <span class="text-gray-800">{{ selectedFicheFrais.dateModif|date('d/m/Y') }}</span>
+        <turbo-frame id="the_frame_fiche">
+        {% if selectedFicheFrais is not null %}
+            <div class="mt-8 bg-white p-6 border border-blue-200 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold text-blue-600 mb-6">Fiche de frais - {{ selectedFicheFrais.mois|date('m/Y') }}</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <span class="block text-gray-500 font-medium">État :</span>
+                        <span class="text-gray-900">{{ selectedFicheFrais.etat.libelle }}</span>
+                    </div>
+                    <div>
+                        <span class="block text-gray-500 font-medium">Montant validé :</span>
+                        <span class="text-gray-900">{{ selectedFicheFrais.montantValid|number_format(2, ',', ' ') }} €</span>
+                    </div>
+                    <div>
+                        <span class="block text-gray-500 font-medium">Date de modification :</span>
+                        <span class="text-gray-900">{{ selectedFicheFrais.dateModif|date('d/m/Y') }}</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        {% dump(selectedFicheFrais) %}
-
-        <div class="mt-8 p-6 border border-gray-300 rounded-lg shadow-md bg-white">
-            <h3 class="text-lg font-semibold mb-4">Frais Forfaitisés</h3>
-            <table class="w-full">
-                <tbody>
-                    {% for lignesFraisForfait in selectedFicheFrais.lignesFraisForfait %}
-                        <tr>
-                            <td>{{ lignesFraisForfait.fraisForfaits.libelle }}: {{ lignesFraisForfait.quantite }}</td>
+            <div class="mt-8 bg-white p-6 border border-blue-200 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-blue-600 mb-4">Frais Forfaitisés</h3>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr>
+                        <th class="border-b py-2 text-gray-600">Type</th>
+                        <th class="border-b py-2 text-gray-600 text-right">Quantité</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ligneFraisForfait in selectedFicheFrais.lignesFraisForfait %}
+                        <tr class="hover:bg-blue-100">
+                            <td class="py-2 border-b">{{ ligneFraisForfait.fraisForfaits.libelle }}</td>
+                            <td class="py-2 border-b text-right">{{ ligneFraisForfait.quantite }}</td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
 
-
-    {% else %}
-        <p class="mt-4 text-gray-600">Veuillez sélectionner un mois pour voir la fiche correspondante.</p>
-    {% endif %}
+            <div class="mt-8 bg-white p-6 border border-blue-200 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-blue-600 mb-4">Frais Hors Forfaitisés</h3>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr>
+                        <th class="border-b py-2 text-gray-600">Description</th>
+                        <th class="border-b py-2 text-gray-600 text-right">Montant</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ligneFraisHorsForfait in selectedFicheFrais.lignesFraisHorsForfait %}
+                        <tr class="hover:bg-blue-100">
+                            <td class="py-2 border-b">{{ ligneFraisHorsForfait.libelle }}</td>
+                            <td class="py-2 border-b text-right">{{ ligneFraisHorsForfait.montant|number_format(2, ',', ' ') }} €</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="mt-8 text-center">
+                <p class="text-gray-500">Veuillez sélectionner un mois pour voir la fiche correspondante.</p>
+            </div>
+        {% endif %}
+    </turbo-frame>
     </div>
 {% endblock %}
