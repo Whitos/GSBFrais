@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Fiche de frais du mois : {{ ficheFrais.mois|date('m/Y') }}</h1>
+
+    <h2>Frais Forfaitisés</h2>
+    <form action="{{ path('app_edit_frais_forfait', {'id': ficheFrais.id}) }}" method="post">
+        {% for frais in ligneFraisForfait %}
+            <label>{{ frais.type }}</label>
+            <input type="number" name="quantite" value="{{ frais.quantite }}" />
+        {% endfor %}
+        <button type="submit">Valider</button>
+    </form>
+
+{#    <h2>Frais Hors Forfaitisés</h2>#}
+{#    <table>#}
+{#        <thead>#}
+{#        <tr>#}
+{#            <th>Date</th>#}
+{#            <th>Libellé</th>#}
+{#            <th>Montant</th>#}
+{#        </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        {% for frais in ligneFraisHorsForfait %}#}
+{#            <tr>#}
+{#                <td>{{ frais.date|date('d/m/Y') }}</td>#}
+{#                <td>{{ frais.libelle }}</td>#}
+{#                <td>{{ frais.montant }}</td>#}
+{#            </tr>#}
+{#        {% else %}#}
+{#            <tr>#}
+{#                <td colspan="3">Aucun frais hors forfait pour ce mois.</td>#}
+{#            </tr>#}
+{#        {% endfor %}#}
+{#        </tbody>#}
+{#    </table>#}
+
+{#    <a href="{{ path('app_add_frais_hors_forfait', {'id': ficheFrais.id}) }}">Ajouter un frais hors forfait</a>#}
+{% endblock %}

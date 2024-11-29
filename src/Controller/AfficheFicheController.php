@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HomeController extends AbstractController
+class AfficheFicheController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function index(Request $request, EntityManagerInterface $em): Response
@@ -34,10 +34,11 @@ class HomeController extends AbstractController
             $selectedFicheFrais = $em->getRepository(FicheFrais::class)->find($ficheFrais);
             $ligneFraisForfait = $selectedFicheFrais->getLignesFraisForfait();
             $ligneFraisHorsForfait = $selectedFicheFrais->getLignesFraisHorsForfait();
+
         }
 
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('affichefiche/index.html.twig', [
             'form' => $form->createView(),
             'selectedFicheFrais' => $selectedFicheFrais,
             'lignesFraisForfait' => $ligneFraisForfait,
