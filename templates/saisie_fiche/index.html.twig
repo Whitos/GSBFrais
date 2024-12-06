@@ -1,40 +1,37 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Fiche de frais du mois : {{ ficheFrais.mois|date('m/Y') }}</h1>
+    <div class="container mx-auto px-4 py-6">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Saisie Fiche de Frais</h1>
 
-    <h2>Frais Forfaitisés</h2>
-    <form action="{{ path('app_edit_frais_forfait', {'id': ficheFrais.id}) }}" method="post">
-        {% for frais in ligneFraisForfait %}
-            <label>{{ frais.type }}</label>
-            <input type="number" name="quantite" value="{{ frais.quantite }}" />
-        {% endfor %}
-        <button type="submit">Valider</button>
-    </form>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Frais Forfaitisés</h2>
+        <div class="bg-white p-6 rounded shadow-md border border-gray-200">
+            {{ form_start(formForfaits, {'attr': {'class': 'space-y-4'}}) }}
+            {{ form_widget(formForfaits, {'attr': {'class': 'w-full border-gray-300 rounded-md shadow-sm'}}) }}
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Enregistrer Frais Forfaitisés
+            </button>
+            {{ form_end(formForfaits) }}
+        </div>
 
-{#    <h2>Frais Hors Forfaitisés</h2>#}
-{#    <table>#}
-{#        <thead>#}
-{#        <tr>#}
-{#            <th>Date</th>#}
-{#            <th>Libellé</th>#}
-{#            <th>Montant</th>#}
-{#        </tr>#}
-{#        </thead>#}
-{#        <tbody>#}
-{#        {% for frais in ligneFraisHorsForfait %}#}
-{#            <tr>#}
-{#                <td>{{ frais.date|date('d/m/Y') }}</td>#}
-{#                <td>{{ frais.libelle }}</td>#}
-{#                <td>{{ frais.montant }}</td>#}
-{#            </tr>#}
-{#        {% else %}#}
-{#            <tr>#}
-{#                <td colspan="3">Aucun frais hors forfait pour ce mois.</td>#}
-{#            </tr>#}
-{#        {% endfor %}#}
-{#        </tbody>#}
-{#    </table>#}
+        {# Uncomment and style the following sections when needed #}
+        {#
+        <h2 class="text-2xl font-semibold text-gray-800 mt-8 mb-4">Frais Hors Forfait</h2>
+        <div class="bg-white p-6 rounded shadow-md border border-gray-200">
+            {{ form_start(formHorsForfait, {'attr': {'class': 'space-y-4'}}) }}
+                {{ form_widget(formHorsForfait, {'attr': {'class': 'w-full border-gray-300 rounded-md shadow-sm'}}) }}
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                    Enregistrer Frais Hors Forfait
+                </button>
+            {{ form_end(formHorsForfait) }}
+        </div>
+        #}
 
-{#    <a href="{{ path('app_add_frais_hors_forfait', {'id': ficheFrais.id}) }}">Ajouter un frais hors forfait</a>#}
+        {#
+        <a href="{{ path('app_modifier_fiche_frais', {'id': ficheFrais.id}) }}"
+           class="block mt-6 text-blue-600 underline hover:text-blue-800">
+            Modifier la Fiche de Frais
+        </a>
+        #}
+    </div>
 {% endblock %}

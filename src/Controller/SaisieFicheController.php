@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\FicheFrais;
 use App\Form\MoisFicheSelectorType;
+use App\Form\SaisieFicheForfaitType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,44 +17,47 @@ class SaisieFicheController extends AbstractController
     public function index(Request $request, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $currentMonth = new \DateTime('first day of this month');
 
-        $fichesFrais = $em->getRepository(FicheFrais::class)->findBy(['user' => $user]);
+        // Obtenir le mois courant
+        $moisActuel = new \DateTime('first day of this month');
 
-        $form = $this->createForm(MoisFicheSelectorType::class, null, [
-            'ficheFraisCollection' => $fichesFrais,
-        ]);
+        // Chercher la fiche de frais du mois courant
+        $ficheFrais = $em->getRepository(FicheFrais::class)
+            ->findOneBy([
+                'user' => $user,
+                'mois' => $moisActuel
+            ]);
 
-        $form->handleRequest($request);
-
-        $ficheFrais = $em->getRepository(FicheFrais::class)->findOneBy([
-            'mois' => $currentMonth,
-            'user' => $user
-        ]);
-
-        // Si aucune fiche de frais n'existe pour le mois courant, en créer une nouvelle
         if (!$ficheFrais) {
-            $ficheFrais = new FicheFrais();
-            $ficheFrais->setMois($currentMonth);
-            $ficheFrais->setUser($user);
+            $uneFicheFrais = new FicheFrais();
+            $uneFicheFrais->setUser($this->getUser());
+            $uneFicheFrais->setMois($moisActuel);
+            $uneFicheFrais->setDateModif(new \DateTime());
+            $uneFicheFrais->setNbJustificatifs(0);
+            $uneFicheFrais->setMontantValid(0);
+            // Créer les lignes de frais forfaitisés
+        }
+
+        $formFraisForfaits = $this->createForm(SaisieFicheForfaitType::class, $ficheFrais);
+        $formFraisForfaits->handleRequest($request);
+
+        if ($formFraisForfaits->isSubmitted() && $formFraisForfaits->isValid()) {
+            //mise à jour de la date de modification
+            $ficheFrais->setDateModif(new \DateTime());
+            //mise à jour des quantités de frais forfaitisés
+            $km = $formFraisForfaits->get('forfaitKm')->getData();
+            $ficheFrais->getLignesFraisForfait()->get(0)->setQuantite($km);
+
             $em->persist($ficheFrais);
             $em->flush();
         }
 
-        // Si le formulaire est soumis et valide, on affiche la fiche de frais sélectionnée
-        if ($form->isSubmitted() && $form->isValid()) {
-            $ficheFrais = $form->get('mois')->getData(); // La fiche de frais sélectionnée
-        }
-
-        // Récupération des lignes de frais pour la fiche sélectionnée
-        $ligneFraisForfait = $ficheFrais->getLignesFraisForfait();
-        $ligneFraisHorsForfait = $ficheFrais->getLignesFraisHorsForfait();
-
         return $this->render('saisie_fiche/index.html.twig', [
-            'form' => $form->createView(),
-            'ficheFrais' => $ficheFrais,
-            'ligneFraisForfait' => $ligneFraisForfait,
-            'ligneFraisHorsForfait' => $ligneFraisHorsForfait,
+            'formForfaits' => $formFraisForfaits->createView(),
         ]);
+
+
+
+
     }
 }
