@@ -1,37 +1,95 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
-    <div class="container mx-auto px-4 py-6">
-        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Saisie Fiche de Frais</h1>
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="bg-white shadow-2xl rounded-xl overflow-hidden">
+            <div class="bg-blue-600 text-white p-6">
+                <h1 class="text-3xl font-bold text-center">Saisie Fiche de Frais du {{moisActuel}}</h1>
+            </div>
+            <div class="p-8">
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                        Frais Forfaitisés
+                    </h2>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                        {{ form_start(formForfaits, {'attr': {'class': 'space-y-4'}}) }}
 
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Frais Forfaitisés</h2>
-        <div class="bg-white p-6 rounded shadow-md border border-gray-200">
-            {{ form_start(formForfaits, {'attr': {'class': 'space-y-4'}}) }}
-            {{ form_widget(formForfaits, {'attr': {'class': 'w-full border-gray-300 rounded-md shadow-sm'}}) }}
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Enregistrer Frais Forfaitisés
-            </button>
-            {{ form_end(formForfaits) }}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                {{ form_label(formForfaits.forfaitKm, 'Frais Kilométriques', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                                {{ form_widget(formForfaits.forfaitKm, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                            </div>
+                            <div>
+                                {{ form_label(formForfaits.forfaitEtape, 'Forfait Etape', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                                {{ form_widget(formForfaits.forfaitEtape, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                            </div>
+                            <div>
+                                {{ form_label(formForfaits.forfaitNuitee, 'Nuitée Hôtel', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                                {{ form_widget(formForfaits.forfaitNuitee, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                            </div>
+                            <div>
+                                {{ form_label(formForfaits.forfaitRepas, 'Repas Restaurant', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                                {{ form_widget(formForfaits.forfaitRepas, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button type="submit" class="
+                            bg-blue-600 text-white
+                            px-6 py-3
+                            rounded-lg
+                            hover:bg-blue-700
+                            focus:outline-none
+                            focus:ring-2
+                            focus:ring-blue-500
+                            focus:ring-offset-2
+                            transition duration-300
+                            transform hover:scale-105
+                        ">
+                                Enregistrer Frais Forfaitisés
+                            </button>
+                        </div>
+                        {{ form_end(formForfaits) }}
+                    </div>
+                </section>
+
+                <section class="mb-8">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                        Frais Hors Forfait
+                    </h2>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                        {{ form_start(formHorsForfaits, {'attr': {'class': 'space-y-4'}}) }}
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                {{ form_label(formHorsForfaits.montant, 'Montant', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                                {{ form_widget(formHorsForfaits.montant, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                            </div>
+                            <div>
+                                {{ form_label(formHorsForfaits.description, 'Description', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                                {{ form_widget(formHorsForfaits.description, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button type="submit" class="
+                            bg-blue-600 text-white
+                            px-6 py-3
+                            rounded-lg
+                            hover:bg-blue-700
+                            focus:outline-none
+                            focus:ring-2
+                            focus:ring-blue-500
+                            focus:ring-offset-2
+                            transition duration-300
+                            transform hover:scale-105
+                        ">
+                                Enregistrer Frais Hors Forfait
+                            </button>
+                        </div>
+                        {{ form_end(formHorsForfaits) }}
+                    </div>
+                </section>
+            </div>
         </div>
-
-        {# Uncomment and style the following sections when needed #}
-        {#
-        <h2 class="text-2xl font-semibold text-gray-800 mt-8 mb-4">Frais Hors Forfait</h2>
-        <div class="bg-white p-6 rounded shadow-md border border-gray-200">
-            {{ form_start(formHorsForfait, {'attr': {'class': 'space-y-4'}}) }}
-                {{ form_widget(formHorsForfait, {'attr': {'class': 'w-full border-gray-300 rounded-md shadow-sm'}}) }}
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                    Enregistrer Frais Hors Forfait
-                </button>
-            {{ form_end(formHorsForfait) }}
-        </div>
-        #}
-
-        {#
-        <a href="{{ path('app_modifier_fiche_frais', {'id': ficheFrais.id}) }}"
-           class="block mt-6 text-blue-600 underline hover:text-blue-800">
-            Modifier la Fiche de Frais
-        </a>
-        #}
     </div>
 {% endblock %}

@@ -15,23 +15,19 @@ class SaisieFicheForfaitType extends AbstractType
         $builder
             ->add('forfaitKm', IntegerType::class, [
                 'label' => 'Frais Kilométriques',
-                'required' => false,
-                'attr' => ['placeholder' => 'Nombre de kilomètres']
+                'required' => false
             ])
             ->add('forfaitEtape', IntegerType::class, [
                 'label' => 'Frais d\'étape',
-                'required' => false,
-                'attr' => ['placeholder' => 'Nombre d\'étapes']
+                'required' => false
             ])
             ->add('forfaitNuitee', IntegerType::class, [
                 'label' => 'Frais de nuitée',
-                'required' => false,
-                'attr' => ['placeholder' => 'Nombre de nuitées']
+                'required' => false
             ])
             ->add('forfaitRepas', IntegerType::class, [
                 'label' => 'Frais de repas',
-                'required' => false,
-                'attr' => ['placeholder' => 'Nombre de repas']
+                'required' => false
             ]);
     }
 

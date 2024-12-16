@@ -31,18 +31,21 @@ class AfficheFicheController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $ficheFrais = $form->get('mois')->getData();
-            $selectedFicheFrais = $em->getRepository(FicheFrais::class)->find($ficheFrais);
-            $ligneFraisForfait = $selectedFicheFrais->getLignesFraisForfait();
-            $ligneFraisHorsForfait = $selectedFicheFrais->getLignesFraisHorsForfait();
-
+            if ($ficheFrais) {
+                $selectedFicheFrais = $em->getRepository(FicheFrais::class)->find($ficheFrais);
+                $ligneFraisForfait = $selectedFicheFrais?->getLignesFraisForfait();
+                $ligneFraisHorsForfait = $selectedFicheFrais?->getLignesFraisHorsForfait();
+            } else {
+                $this->addFlash('error', 'Aucun mois sélectionné');
+            }
         }
 
 
         return $this->render('affichefiche/index.html.twig', [
             'form' => $form->createView(),
             'selectedFicheFrais' => $selectedFicheFrais,
-            'lignesFraisForfait' => $ligneFraisForfait,
-            'lignesFraisHorsForfait' => $ligneFraisHorsForfait,
+            'ligneFraisForfait' => $ligneFraisForfait,
+            'ligneFraisHorsForfait' => $ligneFraisHorsForfait,
         ]);
 
     }
