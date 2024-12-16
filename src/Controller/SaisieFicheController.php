@@ -6,8 +6,10 @@ use App\Entity\Etat;
 use App\Entity\FicheFrais;
 use App\Entity\FraisForfait;
 use App\Entity\LigneFraisForfait;
+use App\Entity\LigneFraisHorsForfait;
 use App\Form\MoisFicheSelectorType;
 use App\Form\SaisieFicheForfaitType;
+use App\Form\SaisieFicheHorsForfaitType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -107,7 +109,6 @@ class SaisieFicheController extends AbstractController
             $etape = $formFraisForfaits->get('forfaitEtape')->getData();
             $nuitee = $formFraisForfaits->get('forfaitNuitee')->getData();
             $repas = $formFraisForfaits->get('forfaitRepas')->getData();
-            //dd($ficheFrais);
             $ficheFrais->getLignesFraisForfait()->get(0)->setQuantite($km);
             $ficheFrais->getLignesFraisForfait()->get(1)->setQuantite($etape);
             $ficheFrais->getLignesFraisForfait()->get(2)->setQuantite($nuitee);
@@ -119,11 +120,49 @@ class SaisieFicheController extends AbstractController
         $em->persist($ficheFrais);
         $em->flush();
 
+        $formHorsForfaits = $this->createForm(SaisieFicheHorsForfaitType::class);
+        $formHorsForfaits->handleRequest($request);
+
+
+        if ($formHorsForfaits->isSubmitted() && $formHorsForfaits->isValid()) {
+            $dataHorsForfait = $formHorsForfaits->getData();
+
+            $ligneHorsForfait = new LigneFraisHorsForfait();
+            $ligneHorsForfait->setFicheFrais($ficheFrais);
+            $ligneHorsForfait->setDate($dataHorsForfait['date']);
+            $ligneHorsForfait->setLibelle($dataHorsForfait['libelle']);
+            $ligneHorsForfait->setMontant($dataHorsForfait['montant']);
+
+            $em->persist($ligneHorsForfait);
+            $ficheFrais->addLignesFraisHorsForfait($ligneHorsForfait);
+
+            $ficheFrais->setDateModif(new \DateTime());
+            $em->flush();
+
+            $this->addFlash('success', 'Frais hors forfait enregistré avec succès');
+            return $this->redirectToRoute('app_saisie_fiche');
+        }
+        $em->persist($ficheFrais);
+        $em->flush();
+
         $moisFormatte = $moisActuel->format('M Y');
+        $lignesFraisHorsForfait = $ficheFrais->getLignesFraisHorsForfait();
 
         return $this->render('saisie_fiche/index.html.twig', [
             'formForfaits' => $formFraisForfaits->createView(),
-            'moisActuel' => $moisFormatte
+            'moisActuel' => $moisFormatte,
+            'formHorsForfaits' => $formHorsForfaits->createView(),
+            'lignesFraisHorsForfait' => $lignesFraisHorsForfait,
         ]);
+    }
+
+    #[Route('/saisiefiche/delete/{id}', name: 'app_saisie_fiche_delete', methods: ['POST'])]
+    public function delete(Request $request, LigneFraisHorsForfait $ligneFraisHorsForfait, EntityManagerInterface $em): Response
+    {
+        $em->remove($ligneFraisHorsForfait);
+        $em->flush();
+
+        $this->addFlash('success', 'Frais hors forfait supprimé avec succès');
+        return $this->redirectToRoute('app_saisie_fiche');
     }
 }
