@@ -7,7 +7,6 @@ use App\Entity\FicheFrais;
 use App\Entity\FraisForfait;
 use App\Entity\LigneFraisForfait;
 use App\Entity\LigneFraisHorsForfait;
-use App\Form\MoisFicheSelectorType;
 use App\Form\SaisieFicheForfaitType;
 use App\Form\SaisieFicheHorsForfaitType;
 use Doctrine\ORM\EntityManagerInterface;
