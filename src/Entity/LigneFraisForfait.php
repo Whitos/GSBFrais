@@ -64,4 +64,9 @@ class LigneFraisForfait
 
         return $this;
     }
+
+    public function getMontantTotalFraisForfait(): ?float
+    {
+        return $this->getFraisForfaits()->getMontant() * $this->getQuantite();
+    }
 }
