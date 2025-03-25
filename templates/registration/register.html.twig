@@ -15,10 +15,54 @@
             <h1 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Inscription</h1>
 
             {{ form_start(registrationForm) }}
+
             <div class="mb-4">
-                {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                {{ form_widget(registrationForm.nom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                {{ form_errors(registrationForm.nom) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(registrationForm.prenom, 'Prénom', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                {{ form_widget(registrationForm.prenom, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                {{ form_errors(registrationForm.prenom) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(registrationForm.login, 'Nom d\'utilisateur', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                {{ form_widget(registrationForm.login, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                {{ form_errors(registrationForm.login) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
                 {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
                 {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(registrationForm.adresse, 'Adresse', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                {{ form_widget(registrationForm.adresse, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                {{ form_errors(registrationForm.adresse) }}
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    {{ form_label(registrationForm.cp, 'Code postal', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                    {{ form_widget(registrationForm.cp, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                    {{ form_errors(registrationForm.cp) }}
+                </div>
+                <div>
+                    {{ form_label(registrationForm.ville, 'Ville', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                    {{ form_widget(registrationForm.ville, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                    {{ form_errors(registrationForm.ville) }}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(registrationForm.date_embauche, 'Date d\'embauche', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                {{ form_widget(registrationForm.date_embauche, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                {{ form_errors(registrationForm.date_embauche) }}
             </div>
 
             <div class="mb-4">
@@ -31,6 +75,12 @@
                 {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'mr-2'}}) }}
                 {{ form_label(registrationForm.agreeTerms, 'J\'accepte les termes et conditions', {'label_attr': {'class': 'text-gray-600'}}) }}
                 {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_label(registrationForm.old_id, 'Identifiant', {'label_attr': {'class': 'block text-gray-600 mb-2'}}) }}
+                {{ form_widget(registrationForm.old_id, {'attr': {'class': 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'}}) }}
+                {{ form_errors(registrationForm.old_id) }}
             </div>
 
             <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">

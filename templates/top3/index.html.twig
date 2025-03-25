@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Top 3 Montants Validés{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto px-6 py-10 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-extrabold text-center text-white mb-8">Top 3 Montants Validés</h1>
+
+        <!-- Formulaire pour sélectionner un mois -->
+        <turbo-frame id="top3_form">
+            <form method="post" action="{{ path('app_top3') }}" class="flex flex-col items-center mb-10" data-turbo-frame="top3_results">
+                <label for="mois" class="block text-lg font-medium text-white mb-4">Sélectionnez un mois :</label>
+                <select id="mois" name="mois"
+                        class="w-64 p-3 border-2 border-white bg-indigo-700 text-white rounded-lg shadow focus:outline-none focus:ring focus:ring-white focus:border-white">
+                    <option value="" disabled selected>-- Choisir un mois --</option>
+                    {% for key, value in moislist %}
+                        <option value="{{ key }}" {% if key == selectedMonth %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit"
+                        class="mt-6 bg-white text-indigo-700 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 focus:outline-none focus:ring focus:ring-indigo-300">
+                    Afficher le Top 3
+                </button>
+            </form>
+        </turbo-frame>
+
+        <!-- Conteneur pour les résultats -->
+        <turbo-frame id="top3_results">
+            {% if ficheFrais is not null %}
+                <div class="overflow-hidden shadow-lg rounded-lg bg-white">
+                    <table class="table-auto w-full text-left border-collapse">
+                        <thead>
+                        <tr class="bg-indigo-700 text-white">
+                            <th class="px-6 py-3 text-lg font-semibold">Nom</th>
+                            <th class="px-6 py-3 text-lg font-semibold">Prénom</th>
+                            <th class="px-6 py-3 text-lg font-semibold text-right">Montant Validé</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for fiche in ficheFrais %}
+                            <tr class="border-t border-gray-200 hover:bg-gray-100">
+                                <td class="px-6 py-4 text-gray-800">{{ fiche.user.nom }}</td>
+                                <td class="px-6 py-4 text-gray-800">{{ fiche.user.prenom }}</td>
+                                <td class="px-6 py-4 text-gray-800 text-right font-semibold">
+                                    {{ fiche.montantValid | number_format(2, ',', ' ') }} €
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center text-white text-lg font-medium mt-10">
+                    Aucune fiche de frais trouvée pour le mois sélectionné.
+                </p>
+            {% endif %}
+        </turbo-frame>
+    </div>
+{% endblock %}
