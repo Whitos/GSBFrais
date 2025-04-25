@@ -9,12 +9,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+//#[IsGranted('ROLE_VISITEUR')]
 class AfficheFicheController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
     public function index(Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isGranted('ROLE_VISITEUR')) {
+            return $this->redirectToRoute('comptable');
+        }
+
         $ficheFraisCollection = $em->getRepository(FicheFrais::class)->findBy(
             ['user' => $this->getUser()]
         );

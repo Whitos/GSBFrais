@@ -22,8 +22,8 @@ class UserType extends AbstractType
         $builder
             ->add('roles', ChoiceType::class, [
                 'choices' => [
-                    'Visiteur' => 'Visiteur',
-                    'Comptable' => 'COMPTABLE',
+                    'Visiteur' => 'ROLE_VISITEUR',
+                    'Comptable' => 'ROLE_COMPTABLE',
                 ],
                 'expanded' => true,
                 'multiple' => true,
