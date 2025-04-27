@@ -1,0 +1,264 @@
+{# templates/comptable/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}GSB Frais - Validation des fiches{% endblock %}
+
+{% block body %}
+    <!-- Entête bleu -->
+    <div class="section-header flex items-center">
+        <i class="fas fa-check-circle mr-3 text-xl"></i>
+        Validation des fiches de frais
+    </div>
+
+
+    <!-- Affichage des messages flash -->
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="mx-6 mt-4 p-4 rounded-md {% if label == 'success' %}bg-green-100 text-green-800 border-green-400{% elseif label == 'error' %}bg-red-100 text-red-800 border-red-400{% else %}bg-blue-100 text-blue-800 border-blue-400{% endif %} border-l-4">
+                {% if label == 'success' %}<i class="fas fa-check-circle mr-2"></i>
+                {% elseif label == 'error' %}<i class="fas fa-exclamation-circle mr-2"></i>
+                {% else %}<i class="fas fa-info-circle mr-2"></i>{% endif %}
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <!-- Contenu du formulaire -->
+    <div class="p-6">
+        {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
+        <div class="flex items-end gap-6">
+            <div class="flex-grow">
+                {{ form_row(form.visiteur, {'attr': {'class': 'select-box'}}) }}
+            </div>
+
+            {% if visiteur is null %}
+                <button class="search-button flex items-center" type="submit">
+                    <i class="fas fa-search mr-2"></i>
+                    Sélectionner
+                </button>
+            {% endif %}
+
+            {% if form.mois is defined %}
+                <div class="flex-grow">
+                    {{ form_row(form.mois, {'attr': {'class': 'select-box'}}) }}
+                </div>
+                <button class="search-button flex items-center" type="submit">
+                    <i class="fas fa-search mr-2"></i>
+                    Rechercher
+                </button>
+            {% endif %}
+        </div>
+        {{ form_end(form) }}
+
+        <!-- Zone d'aide contextuelle -->
+        <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-500"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-blue-700">
+                        {% if visiteur %}
+                            Sélectionnez un mois pour afficher et valider la fiche de frais.
+                        {% else %}
+                            Sélectionnez d'abord un visiteur.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {% if selectedFicheFrais %}
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Détails de la fiche de frais</h2>
+
+                <div class="bg-white shadow-md rounded-lg mb-6">
+                    <div class="p-4 border-b border-gray-200">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="text-gray-500">Visiteur :</span>
+                                <span class="font-medium">{{ selectedFicheFrais.user.nom }} {{ selectedFicheFrais.user.prenom }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Mois :</span>
+                                <span class="font-medium">
+                                    {{ selectedFicheFrais.mois|date("m/Y", "Europe/Paris") }}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">État :</span>
+                                <span class="font-medium px-2 py-1 rounded
+                                    {% if selectedFicheFrais.etat.id == 1 %}bg-blue-100 text-blue-800
+                                    {% elseif selectedFicheFrais.etat.id == 4 %}bg-green-100 text-green-800
+                                    {% elseif selectedFicheFrais.etat.id == 5 %}bg-red-100 text-red-800
+                                    {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                    {% if selectedFicheFrais.etat.id == 1 %}Saisie clôturée
+                                    {% elseif selectedFicheFrais.etat.id == 2 %}Fiche créée, saisie en cours
+                                    {% elseif selectedFicheFrais.etat.id == 4 %}Validée
+                                    {% elseif selectedFicheFrais.etat.id == 5 %}Refusée
+                                    {% elseif selectedFicheFrais.etat.id == 6 %}Mise en paiement
+                                    {% elseif selectedFicheFrais.etat.id == 3 %}Remboursée
+                                    {% else %}{{ selectedFicheFrais.etat.libelle }}{% endif %}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Montant total :</span>
+                                <span class="font-medium">{{ selectedFicheFrais.montantValid ?? 0 }} €</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Date de dernière modification :</span>
+                                <span class="font-medium">{{ selectedFicheFrais.dateModif|date('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Frais forfaitaires -->
+                {% if ligneFraisForfait|length > 0 %}
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Frais forfaitaires</h3>
+                    <div class="bg-white shadow overflow-hidden rounded-md mb-6">
+                        <form method="post"
+                              action="{{ path('comptable_actualiser_forfait', {'id': selectedFicheFrais.id}) }}"
+                              data-turbo="false">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Type
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Quantité
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Montant unitaire
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Total
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                {% for ligne in ligneFraisForfait %}
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ ligne.fraisForfaits.libelle }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <input type="number" name="frais[{{ ligne.id }}]"
+                                                   value="{{ ligne.quantite }}" min="0" class="w-20 p-2 border rounded">
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ ligne.fraisForfaits.montant }} €
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ ligne.montantTotalFraisForfait }} €
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <div class="px-6 py-4 bg-gray-50 text-right">
+                                <button type="submit"
+                                        class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Actualiser les quantités
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                {% endif %}
+
+                <!-- Frais hors forfait -->
+                {% if ligneFraisHorsForfait|length > 0 %}
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Frais hors forfait</h3>
+                    <div class="bg-white shadow overflow-hidden rounded-md mb-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Date
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Libellé
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Montant
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                            {% for ligne in ligneFraisHorsForfait %}
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ ligne.date|date('d/m/Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {% if ligne.libelle starts with 'REFUSE: ' %}
+                                            {{ ligne.libelle|replace({'REFUSE: ': ''}) }}
+                                            <span class="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Refusé</span>
+                                        {% elseif ligne.libelle starts with 'REPORTE: ' %}
+                                            {{ ligne.libelle|replace({'REPORTE: ': ''}) }}
+                                            <span class="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Reporté</span>
+                                        {% else %}
+                                            {{ ligne.libelle }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ligne.montant }} €</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        {% if not (ligne.libelle starts with 'REFUSE: ') and not (ligne.libelle starts with 'REPORTE: ') %}
+                                            <a href="{{ path('comptable_refuser_hors_forfait', {'id': ligne.id}) }}"
+                                               class="text-red-600 hover:text-red-900 mr-3" data-turbo="false">
+                                                <i class="fas fa-times-circle mr-1"></i> Refuser
+                                            </a>
+                                            <a href="{{ path('comptable_reporter_hors_forfait', {'id': ligne.id}) }}"
+                                               class="text-indigo-600 hover:text-indigo-900" data-turbo="false">
+                                                <i class="fas fa-arrow-right mr-1"></i> Reporter
+                                            </a>
+                                        {% else %}
+                                            <span class="text-gray-400">Déjà traité</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+
+                <!-- Boutons d'action -->
+                <div class="mt-6 flex justify-end space-x-4">
+{#                    <a href="{{ path('comptable_rejeter_fiche', {'id': selectedFicheFrais.id}) }}"#}
+{#                       class="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors"#}
+{#                       data-turbo="false">#}
+{#                        <i class="fas fa-times mr-2"></i>#}
+{#                        Rejeter#}
+{#                    </a>#}
+                    <a href="{{ path('comptable_valider_fiche', {'id': selectedFicheFrais.id}) }}"
+                       class="bg-green-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                       data-turbo="false">
+                        <i class="fas fa-check mr-2"></i>
+                        Valider
+                    </a>
+                </div>
+            </div>
+        {% elseif app.request.method == 'POST' %}
+            <div class="mt-8 p-6 bg-yellow-50 border-l-4 border-yellow-500 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            Pas de fiche de frais pour ce visiteur ce mois. Veuillez sélectionner une autre période ou
+                            un autre visiteur.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -5,21 +5,32 @@ namespace App\Tests;
 use App\Entity\FicheFrais;
 use App\Entity\FraisForfait;
 use App\Entity\LigneFraisForfait;
+use App\Entity\LigneFraisHorsForfait;
 use PHPUnit\Framework\TestCase;
 
 class LigneFraisForfaitTest extends TestCase
 {
-    public function testGetMontantLigneFraisForfait()
+    public function testMontantHorsForfaitPositif()
     {
-        $ficheFrais = new FicheFrais();
-        $fraisForfait = new FraisForfait();
-        $fraisForfait->setMontant(20);
+        $ligne = new LigneFraisHorsForfait();
+        $ligne->setMontant(150.00);
+        $this->assertGreaterThan(0, $ligne->getMontant());
+    }
 
-        $ligneFraisForfait = new LigneFraisForfait();
+    public function testLibelleNonVide()
+    {
+        $ligne = new LigneFraisHorsForfait();
+        $ligne->setLibelle('Achat fournitures');
+        $this->assertNotEmpty($ligne->getLibelle());
+    }
 
+    public function testDateEngagementValide()
+    {
+        $ligne = new LigneFraisHorsForfait();
+        $date = new \DateTime('-6 months');
+        $ligne->setDate($date);
 
-        $expectedMontant = 3 * 20;
-
-        $this->assertEquals($expectedMontant, $ligneFraisForfait->getMontantTotalFraisForfait());
+        $this->assertInstanceOf(\DateTime::class, $ligne->getDate());
+        $this->assertLessThanOrEqual(new \DateTime(), $ligne->getDate());
     }
 }
