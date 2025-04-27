@@ -1,58 +1,78 @@
 
-# GSB Frais - Dossier Technique
+# GSB Frais
 
-## Présentation du projet
-L'application **GSB Frais** est destinée à la gestion des frais engagés par les visiteurs médicaux du laboratoire **Galaxy Swiss Bourdin**.
-Elle permet l'enregistrement, la validation et le remboursement des frais, tout en offrant un accès sécurisé aux utilisateurs.
+Application Web de gestion des frais professionnels pour les visiteurs médicaux et le service comptable du laboratoire Galaxy Swiss Bourdin.
 
-## Fonctionnement de l'application
-### Visiteurs médicaux
-- Authentification sécurisée
-- Saisie des frais forfaitisés et hors forfait
-- Suivi de l'évolution des remboursements
+## 📋 Présentation du projet
 
-### Comptables
-- Validation des fiches de frais
-- Suivi du paiement des remboursements
+L'application **GSB Frais** permet :
+- Aux visiteurs médicaux de saisir leurs frais forfaitisés et hors-forfait, et de suivre l’état de leurs remboursements.
+- Aux comptables de valider les fiches de frais, contrôler les frais saisis, et suivre le paiement des remboursements.
 
-## Architecture technique
-- **Architecture** : MVC (Model-View-Controller)
-- **Technologies** :
-  - PHP / Symfony
-  - Base de données MySQL
-  - Front-end HTML/CSS (avec Tailwind/Bootstrap possibles)
-- **Modèles** :
-  - `User`, `FicheFrais`, `FraisForfait`, `FraisHorsForfait`
+Le projet s'inscrit dans une démarche de modernisation et d'uniformisation de la gestion des frais, avec un accent sur la **sécurité**, la **traçabilité**, et l'**ergonomie**.
 
-## Diagramme de classes
-![Diagramme de classes](5e6d76f5-e2a2-4ecb-9efc-e4db4bbbdb14.png)
+## 🛠️ Fonctionnalités principales
 
-## Description des principales classes et contrôleurs
-- **UserController** : Gestion des utilisateurs et de l'authentification
-- **FicheFraisController** : Gestion des fiches de frais (saisie, validation, consultation)
-- **Entités** :
-  - **FicheFrais** : représente une fiche de frais par mois/utilisateur
-  - **FraisForfait** : représente un frais standardisé
-  - **FraisHorsForfait** : représente un frais exceptionnel avec justificatif
+- Authentification sécurisée (visiteur médical ou comptable)
+- Saisie et modification des frais forfaitisés et hors forfait
+- Consultation et suivi des fiches de frais
+- Validation des fiches par les comptables
+- Suivi du paiement et remboursement des frais
 
-## Assurance qualité
+## 🧱 Architecture technique
 
-### Tests fonctionnels réalisés :
-- ✅ Connexion/déconnexion sécurisée
-- ✅ Ajout, modification et suppression de frais
-- ✅ Validation correcte des fiches de frais
-- ✅ Respect des délais de clôture/mise en paiement
-- ✅ Sécurité des accès
+- **Symfony** (PHP) pour le back-end
+- **Twig** pour les vues
+- **MySQL** pour la base de données
+- **Tailwind CSS** pour le design responsive
+- Architecture **MVC** (Modèle - Vue - Contrôleur)
 
-### Tests complémentaires recommandés :
-- Tests unitaires sur les modèles
-- Analyse de la qualité du code avec SonarQube / PHPStan
+## 🗂️ Arborescence des principaux dossiers Symfony
 
-## Annexes
-- **Accès au dépôt GitHub** : [GSB Frais Repository](https://github.com/Whitos/GSBFrais)
-- **Instructions de déploiement** :
-  1. Cloner le dépôt : `git clone https://github.com/Whitos/GSBFrais.git`
-  2. Installer les dépendances Symfony
-  3. Configurer le fichier `.env` pour la base de données
-  4. Lancer les migrations si nécessaire
-  5. Démarrer le serveur local : `symfony server:start`
+```
+src/
+├── Controller/
+├── Entity/
+├── Form/
+├── Repository/
+├── Security/
+templates/
+```
+
+## 🧪 Assurance qualité
+
+### Tests fonctionnels réalisés
+- Connexion/déconnexion sécurisée
+- Saisie/modification/suppression de frais
+- Validation correcte des fiches de frais
+- Suivi de l’état de remboursement
+- Sécurité des accès
+
+### Tests unitaires
+- Test des entités principales : `User`, `FicheFrais`, `Etat`, `LigneFraisForfait`, `LigneFraisHorsForfait`
+- Vérification de la validité des données (emails, montants, dates)
+
+## 🚀 Déploiement rapide
+
+1. Cloner le dépôt :
+```bash
+git clone https://github.com/Whitos/GSBFrais.git
+```
+2. Installer les dépendances Symfony :
+```bash
+composer install
+```
+3. Configurer votre fichier `.env` pour la connexion à votre base de données.
+4. Créer et mettre à jour la base :
+```bash
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+```
+5. Lancer le serveur Symfony :
+```bash
+symfony server:start
+```
+
+## 🔗 Liens utiles
+
+- [Accéder au projet sur GitHub](https://github.com/Whitos/GSBFrais)
